@@ -124,6 +124,13 @@ class Events(APIView):
     parser_classes = (parsers.JSONParser,parsers.FormParser)
     renderer_classes = (renderers.JSONRenderer, )
 
+    def get(self, request, format=None):
+        events = Event.objects.all()
+        json_data = serializers.serialize('json', events)
+        content = {'events': json_data}
+        return HttpResponse(json_data, content_type='json')
+
+
     def post(self, request, *args, **kwargs):
         print 'REQUEST DATA'
         print str(request.data)
@@ -150,11 +157,7 @@ class Events(APIView):
         print 'New Event Logged from: ' + requestor
         return Response({'success': True}, status=status.HTTP_200_OK)
 
-    def get(self, request, format=None):
-        events = Event.objects.all()
-        json_data = serializers.serialize('json', events)
-        content = {'events': json_data}
-        return HttpResponse(json_data, content_type='json')
+
 
 class ActivateIFTTT(APIView):
     permission_classes = (AllowAny,)
